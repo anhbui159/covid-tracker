@@ -1,0 +1,14 @@
+<div class="jumbotron bg-white text-center">
+  <h1 class="display-4">Covid tracker by country</h1>
+  <hr />
+  <div class="mx-auto">
+    <div class="form-group col-lg-5 mx-auto">
+      <label for="c">Select Cou ntry</label>
+      <select name="" class="form-control" id="c">
+        <option value="country" *ngFor="let country of countries">
+          {{ country }}
+        </option>
+      </select>
+    </div>
+  </div>
+</div>
