@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { DataServiceService } from 'src/app/services/data-service.service';
 import { GlobalDataSummary } from './../../models/global-data';
 import { GoogleChartInterface } from 'ng2-google-charts';
-import { Ng2GoogleChartsModule, GoogleChartsSettings } from 'ng2-google-charts';
 
 @Component({
   selector: 'app-home',
@@ -14,25 +13,53 @@ export class HomeComponent implements OnInit {
   totalActive = 0;
   totalDeaths = 0;
   totalRecovered = 0;
+  datatable: any = [];
   globalData: GlobalDataSummary[] = [];
   pieChart: GoogleChartInterface = {
     chartType: 'PieChart',
   };
+
+  columnChart: GoogleChartInterface = {
+    chartType: 'ColumnChart',
+  };
   constructor(private dataService: DataServiceService) {}
 
-  initChart() {
-    let datatable: any = [];
-    datatable.push(['Country', 'Cases']);
-    console.log(this.globalData);
+  initChart(caseType: string) {
+    this.datatable.push(['Country', 'Cases']);
+    // console.log(this.globalData);
+    // console.log(caseType);
     this.globalData.forEach((cs) => {
-      datatable.push([cs.country, cs.confirmed]);
+      let value: number = 0;
+      if (caseType == 'c') {
+        value = cs.confirmed;
+      }
+      if (caseType == 'a') {
+        value = cs.active;
+      }
+      if (caseType == 'd') {
+        value = cs.deaths;
+      }
+      if (caseType == 'r') {
+        value = cs.recovered;
+      }
+      this.datatable.push([cs.country, value]);
     });
-    console.log(datatable);
+
+    this.pieChart = Object.create(this.pieChart);
+    this.pieChart.dataTable = this.datatable;
     this.pieChart = {
       chartType: 'PieChart',
-      dataTable: datatable,
+      dataTable: this.datatable,
       //firstRowIsData: true,
-      // options: { title: 'Tasks' },
+      options: { height: 500 },
+    };
+    this.columnChart = Object.create(this.columnChart);
+    this.columnChart.dataTable = this.datatable;
+    this.columnChart = {
+      chartType: 'ColumnChart',
+      dataTable: this.datatable,
+      //firstRowIsData: true,
+      options: { height: 500 },
     };
   }
   ngOnInit(): void {
@@ -48,8 +75,13 @@ export class HomeComponent implements OnInit {
             this.totalRecovered += cs.recovered;
           }
         });
-        this.initChart();
+        this.initChart('c');
       },
     });
+  }
+
+  updateChart(input: HTMLInputElement) {
+    this.datatable = [];
+    this.initChart(input.value);
   }
 }
