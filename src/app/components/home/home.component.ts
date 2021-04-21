@@ -25,6 +25,7 @@ export class HomeComponent implements OnInit {
   constructor(private dataService: DataServiceService) {}
 
   initChart(caseType: string) {
+    this.datatable = [];
     this.datatable.push(['Country', 'Cases']);
     // console.log(this.globalData);
     // console.log(caseType);
@@ -45,16 +46,14 @@ export class HomeComponent implements OnInit {
       this.datatable.push([cs.country, value]);
     });
 
-    this.pieChart = Object.create(this.pieChart);
-    this.pieChart.dataTable = this.datatable;
+    this.pieChart.dataTable = Object.assign([], this.datatable);
+    this.columnChart.dataTable = Object.assign([], this.datatable);
     this.pieChart = {
       chartType: 'PieChart',
       dataTable: this.datatable,
       //firstRowIsData: true,
       options: { height: 500 },
     };
-    this.columnChart = Object.create(this.columnChart);
-    this.columnChart.dataTable = this.datatable;
     this.columnChart = {
       chartType: 'ColumnChart',
       dataTable: this.datatable,
@@ -81,7 +80,6 @@ export class HomeComponent implements OnInit {
   }
 
   updateChart(input: HTMLInputElement) {
-    this.datatable = [];
     this.initChart(input.value);
   }
 }
