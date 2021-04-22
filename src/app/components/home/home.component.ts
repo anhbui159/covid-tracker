@@ -22,6 +22,8 @@ export class HomeComponent implements OnInit {
   columnChart: GoogleChartInterface = {
     chartType: 'ColumnChart',
   };
+  pChart = this.pieChart.component;
+  cChart = this.columnChart.component;
   constructor(private dataService: DataServiceService) {}
 
   initChart(caseType: string) {
@@ -33,21 +35,15 @@ export class HomeComponent implements OnInit {
       let value: number = 0;
       if (caseType == 'c') {
         value = cs.confirmed;
-      }
-      if (caseType == 'a') {
+      } else if (caseType == 'a') {
         value = cs.active;
-      }
-      if (caseType == 'd') {
+      } else if (caseType == 'd') {
         value = cs.deaths;
-      }
-      if (caseType == 'r') {
+      } else if (caseType == 'r') {
         value = cs.recovered;
       }
       this.datatable.push([cs.country, value]);
     });
-
-    this.pieChart.dataTable = Object.assign([], this.datatable);
-    this.columnChart.dataTable = Object.assign([], this.datatable);
     this.pieChart = {
       chartType: 'PieChart',
       dataTable: this.datatable,
@@ -60,6 +56,9 @@ export class HomeComponent implements OnInit {
       //firstRowIsData: true,
       options: { height: 500 },
     };
+    console.log(caseType);
+    this.cChart?.draw();
+    this.pChart?.draw();
   }
   ngOnInit(): void {
     this.dataService.getGlobalData().subscribe({
